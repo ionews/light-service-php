@@ -37,4 +37,14 @@ class LightContext extends ArrayObject {
     $this->failureMessage = $msg;
     $this->failure = true;
   }
+
+  public function hasKeys(array $keys) {
+    $has = true;
+    
+    foreach ($keys as $key) {
+      $has &= $this->offsetExists($key);
+    }
+    
+    return $has;
+  }
 }
