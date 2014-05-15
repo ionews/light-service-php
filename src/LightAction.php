@@ -7,19 +7,23 @@ abstract class LightAction {
   public static function execute($params = []) {
     $class = get_called_class();
     $instance = new $class($params);
-    
-    if (!$instance->hasExpectations()) {
+
+    if (!$instance->expectationsMet()) {
       $instance->fail('Expectations were not met');
       return $instance;
     }
-    
-    $instance->setup();
+
+    $instance->before();
 
     if ($instance->success()) {
       $instance->perform();
 
-      if ($instance->success() && !$instance->hasPromises()) {
-        $instance->fail('Promises were not met');
+      if ($instance->success()) {
+        if (!$instance->promisesMet()) {
+          $instance->fail('Promises were not met');
+        }
+
+        $instance->after();
       }
     } else {
       $instance->rollback();
@@ -37,7 +41,8 @@ abstract class LightAction {
   }
 
   abstract protected function perform();
-  protected function setup() {}
+  protected function before() {}
+  protected function after() {}
   protected function rollback() {}
 
   protected function fail($msg = null) {
@@ -47,12 +52,12 @@ abstract class LightAction {
   protected function halt() {
     return $this->context->halt();
   }
-  
-  private function hasExpectations() {
+
+  private function expectationsMet() {
     return $this->context->hasKeys($this->expects);
   }
-  
-  private function hasPromises() {
+
+  private function promisesMet() {
     return $this->context->hasKeys($this->promises);
   }
 

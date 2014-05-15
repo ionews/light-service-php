@@ -7,28 +7,32 @@ abstract class LightOrganizer extends LightAction {
   protected $organize;
   protected $performed = [];
 
-  protected function perform() {
+  protected function __construct($params) {
+    parent::__construct($params);
+
     if (empty($this->organize)) {
       $this->fail('Specify the actions to be executed by this organizer');
-    } else {
-      foreach ($this->organize as $action) {
-        try {
-          $instance = $action::execute($this->context);
-        } catch(Exception $ex) {
-          $this->rollback();
-          throw $ex;
-        }
+    }
+  }
 
-        if ($this->failure()) {
-          $this->rollback();
-          break;
-        }
+  protected function perform() {
+    foreach ($this->organize as $action) {
+      try {
+        $instance = $action::execute($this->context);
+      } catch(Exception $ex) {
+        $this->rollback();
+        throw $ex;
+      }
 
-        $this->performed[] = $instance;
+      if ($this->failure()) {
+        $this->rollback();
+        break;
+      }
 
-        if ($this->halted()) {
-          break;
-        }
+      $this->performed[] = $instance;
+
+      if ($this->halted()) {
+        break;
       }
     }
   }
