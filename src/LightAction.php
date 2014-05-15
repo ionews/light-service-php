@@ -76,4 +76,8 @@ abstract class LightAction {
   public function getContext() {
     return $this->context;
   }
+
+  public function getFailureMessage() {
+    return $this->context->getFailureMessage();
+  }
 }

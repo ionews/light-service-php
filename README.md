@@ -52,7 +52,13 @@ Call example (from a MVC controller):
 ```php
 class UserController extends BaseController {
   public function resetPassword() {
-    ResetUserPassword::execute(['user_id' => $this->request->id]);
+    $result = ResetUserPassword::execute(['user_id' => $this->request->id]);
+
+    if ($result->success()) {
+      // use $result->getContext() to access the results and redirect the app
+    } else {
+      // error, use $result->getFailureMessage() to access any failure message
+    }
   }
 }
 ```
