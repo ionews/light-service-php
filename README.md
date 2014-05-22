@@ -4,11 +4,9 @@ Small piece of software intended to enforce SRP on PHP apps, thought to be "ligh
 - [LightService](https://github.com/adomokos/light-service)
 - [Interactor](https://github.com/collectiveidea/interactor)
 
-
-
 Concept
 -------
-Each action should have a single responsibility that must be implemented in the perform method. An action can access databases, send emails, call services and etc.
+Each action should have a single responsibility that must be implemented in the `perform` method. An action can access databases, send emails, call services and etc.
 When an action is executed, it receives a context which can be read and modified.
 
 To perform more complex operations you must use an organizer chaining multiple actions, which will share the same context during execution. In fact, an organizer is nothing more than an action with a specific implementation, meaning that an action and an organizer share the very same interface. This is useful so you can include an organizer as an action inside another organizer.
@@ -16,7 +14,7 @@ To perform more complex operations you must use an organizer chaining multiple a
 Action examples:
 
 ```php
-class GenerateRandomPassword extends LightAction {
+class GenerateRandomPassword extends Action {
   protected function perform() {
     $length = 8;
     $chars = '0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ';
@@ -30,7 +28,7 @@ class GenerateRandomPassword extends LightAction {
   }
 }
 
-class UpdateUserPassword extends LightAction {
+class UpdateUserPassword extends Action {
   protected function perform() {
     $user_id = $this->context->user_id;
     $password = $this->context->password;
@@ -42,7 +40,7 @@ class UpdateUserPassword extends LightAction {
 Organizer example:
 
 ```php
-class ResetUserPassword extends LightOrganizer {
+class ResetUserPassword extends Organizer {
   protected $organize = ['GenerateRandomPassword', 'UpdateUserPassword', 'EmailUserWithPassword'];
 }
 ```
@@ -67,15 +65,135 @@ class UserController extends BaseController {
 
 Fail and Halt
 -------------
+An action may fail, meaning that it couldn't achieve its goal. To make an action fail just call the `fail` method (optionally passing a message).
+
+```php
+class SomeAction extends Action {
+  protected function perform() {
+    $this->fail('Oh noes');
+  }
+}
+
+$result = SomeAction::execute([]);
+$result->success(); // false
+$result->failure(); // true
+$result->halted(); // false
+$result->getFailureMessage(); // 'Oh noes'
+```
+
+If the action is executing inside an organizer and fails, it will prevent the execution of the subsequents actions.
+If an action implements a `rollback` method, it will be called after a subsequent action fails. Example: if `EmailUserWithPassword` fails to send an e-mail to the user, we could implement an `rollback` method in the `UpdateUserPassword` to undo the update. Inside the `rollback` method you can access the context in the same way as in `perform`.
+
+```php
+class UpdateUserPassword extends Action {
+  protected function perform() {
+    $user_id = $this->context->user_id;
+    $password = $this->context->password;
+    // access the database using the method of your choice and update the password
+  }
+
+  protected function rollback() {
+    // undo the update password
+  }
+}
+```
+
+It's possible to stop the execution chain without fail: using `halt`. Basically it will prevent any subsequent actions of execute, but the result remains a success. You can test if an action/organizer was halted using the `halted` method.
+
+```php
+class SomeAction extends Action {
+  protected function perform() {
+    $this->halt();
+  }
+}
+
+$result = SomeAction::execute([]);
+$result->success(); // true
+$result->failure(); // false
+$result->halted(); // true
+```
 
 Before and After
 ----------------
+A `before` method can be implemented if you need to do any setup pre-execution. If the `fail` method is called inside the `before`, `perform` will never be called.
+In the same way, an `after` method can be implemented so you can do any cleanup, but keep in mind that if `before` or `perform` fails it will never be called.
+
+```php
+class SomeAction extends Action {
+  protected function before() {
+    // any setup
+  }
+
+  protected function perform() {
+    // perform
+  }
+
+  protected function after() {
+    // cleanup
+  }
+}
+```
 
 Expects and Promises
 --------------------
+Expectations and promises can be defined for each action. If an action has a set of expectations, it will automatically fails if these aren't met.
+
+```php
+class UpdateUserPassword extends Action {
+  protected $expects = ['user_id', 'password'];
+
+  protected function perform() {
+    $user_id = $this->context->user_id;
+    $password = $this->context->password;
+    // access the database using the method of your choice and update the password
+  }
+}
+
+$result = UpdateUserPassword::execute(['user_id' => 1]);
+$result->success(); // false
+$result->getFailureMessage(); // 'Expectations were not met'
+```
+
+Similarly, an action will fail if a set of promises are defined and these are not present in the context at the end of execution.
+
+```php
+class GenerateRandomPassword extends Action {
+  protected $promises = ['password'];
+
+  protected function perform() {
+    $length = 8;
+    $chars = '0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ';
+    $password = '';
+
+    for ($i = 0; $i < $length; $i++) {
+      $password .= $chars[rand(0, strlen($chars) - 1)];
+    }
+
+    //$this->context->password = $password;
+  }
+}
+
+$result = GenerateRandomPassword::execute([]);
+$result->success(); // false
+$result->getFailureMessage(); // 'Promises were not met'
+```
+
+This feature is particularly useful so you can explicitly define the interface between the actions.
 
 Iterator Action
 ---------------
+It's an action that will be performed over an array.
+
+```php
+class SomeAction extends IteratorAction {
+  protected $over = 'key_of_the_array_in_context'
+
+  protected function perform_each($key, $value) {
+    ...
+  }
+}
+
+```
 
 Requirements
 ------------
