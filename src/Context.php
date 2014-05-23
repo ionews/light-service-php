@@ -1,6 +1,7 @@
 <?php
+namespace LightServicePHP;
 
-class LightContext extends ArrayObject {
+class Context extends \ArrayObject {
 
   public static function build($params) {
     return (is_object($params) && get_class($params) == 'LightContext') ? $params : new LightContext($params);

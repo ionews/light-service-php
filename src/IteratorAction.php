@@ -1,8 +1,7 @@
 <?php
+namespace LightServicePHP;
 
-require_once('LightAction.php');
-
-abstract class LightIteratorAction extends LightAction {
+abstract class IteratorAction extends Action {
 
   protected $over;
 

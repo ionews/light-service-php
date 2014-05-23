@@ -1,8 +1,7 @@
 <?php
+namespace LightServicePHP;
 
-require_once('LightAction.php');
-
-abstract class LightOrganizer extends LightAction {
+abstract class Organizer extends Action {
 
   protected $organize;
   protected $performed = [];
@@ -19,7 +18,7 @@ abstract class LightOrganizer extends LightAction {
     foreach ($this->organize as $action) {
       try {
         $instance = $action::execute($this->context);
-      } catch(Exception $ex) {
+      } catch(\Exception $ex) {
         $this->rollback();
         throw $ex;
       }

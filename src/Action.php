@@ -1,8 +1,7 @@
 <?php
+namespace LightServicePHP;
 
-require_once('LightContext.php');
-
-abstract class LightAction {
+abstract class Action {
 
   public static function execute($params = []) {
     $class = get_called_class();
@@ -37,7 +36,7 @@ abstract class LightAction {
   protected $promises = [];
 
   protected function __construct($params) {
-    $this->context = LightContext::build($params);
+    $this->context = Context::build($params);
   }
 
   abstract protected function perform();

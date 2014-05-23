@@ -19,11 +19,8 @@ class C extends LightOrganizer {
 
 $result1 = A::execute(['a' => 1]);
 $result2 = C::execute(['a' => 2]);
+?>
 
-if ($result1->success() && $result2->success()) {
-  echo $result1->getContext()->b;
-  echo '<br/>';
-  echo $result2->getContext()->c;
-} else {
-  echo 'Oops';
-}
+Result 1: <?php print_r($result1->getContext()->getArrayCopy()); ?>
+<br/>
+Result 2: <?php print_r($result2->getContext()->getArrayCopy()); ?>
