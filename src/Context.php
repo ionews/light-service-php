@@ -31,7 +31,7 @@ class Context extends \ArrayObject {
   }
 
   public function halt() {
-    $this->halt = true;
+    $this->halted = true;
   }
 
   public function fail($msg = null) {
@@ -50,6 +50,6 @@ class Context extends \ArrayObject {
       $has &= $this->offsetExists($key);
     }
 
-    return $has;
+    return (bool)$has;
   }
 }
