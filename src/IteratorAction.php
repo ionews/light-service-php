@@ -16,8 +16,8 @@ abstract class IteratorAction extends Action {
   }
 
   protected function perform() {
-    foreach ($this->over as $key => $value) {
-      $this->perform_each($key, $value);
+    foreach ($this->context->{$this->over} as $key => $value) {
+      $this->each($key, $value);
 
       if ($this->failure() || $this->halted()) {
         break;
@@ -25,5 +25,5 @@ abstract class IteratorAction extends Action {
     }
   }
 
-  abstract protected function perform_each($key, $value);
+  abstract protected function each($key, $value);
 }

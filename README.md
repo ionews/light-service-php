@@ -194,7 +194,7 @@ It's an action that will be performed over an array.
 class SomeAction extends IteratorAction {
   protected $over = 'key_of_the_array_in_context'
 
-  protected function perform_each($key, $value) {
+  protected function each($key, $value) {
     ...
   }
 }
