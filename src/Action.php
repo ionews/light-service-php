@@ -3,7 +3,7 @@ namespace LightServicePHP;
 
 abstract class Action {
 
-  public static function execute($params = []) {
+  public static function execute($params = array()) {
     $class = get_called_class();
     $instance = new $class($params);
 
@@ -32,8 +32,8 @@ abstract class Action {
   }
 
   protected $context;
-  protected $expects = [];
-  protected $promises = [];
+  protected $expects = array();
+  protected $promises = array();
 
   protected function __construct($params) {
     $this->context = Context::build($params);

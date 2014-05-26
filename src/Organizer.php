@@ -4,7 +4,7 @@ namespace LightServicePHP;
 abstract class Organizer extends Action {
 
   protected $organize;
-  protected $performed = [];
+  protected $performed = array();
 
   protected function __construct($params) {
     parent::__construct($params);
