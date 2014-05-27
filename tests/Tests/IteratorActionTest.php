@@ -32,9 +32,6 @@ class HaltMockIteratorAction extends IteratorAction {
     }
 }
 
-/**
- * @author mcbarros
- */
 class IteratorActionTest extends \PHPUnit_Framework_TestCase {
     public function testExecuteFailsIfThereIsntAnOverCollection() {
         $result = FailMockIteratorAction::execute();

@@ -47,9 +47,6 @@ class PromisesMockAction extends Action {
     }
 }
 
-/**
- * @author mcbarros
- */
 class ActionTest extends \PHPUnit_Framework_TestCase {
     public function testExecuteReturnsAnActionInstance() {
         $result = MockAction::execute();

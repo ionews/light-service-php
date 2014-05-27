@@ -3,9 +3,6 @@ namespace Tests;
 
 use LightServicePHP\Context;
 
-/**
- * @author mcbarros
- */
 class ContextTest extends \PHPUnit_Framework_TestCase {
     public function testBuildConvertsTheGivenArrayToAContext() {
         $context = Context::build(array('test' => 'testValue'));

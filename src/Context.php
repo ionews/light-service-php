@@ -4,7 +4,7 @@ namespace LightServicePHP;
 class Context extends \ArrayObject {
 
   public static function build($params) {
-    return (is_object($params) && get_class($params) == 'Context') ? $params : new Context($params);
+    return (is_object($params) && get_class($params) == 'LightServicePHP\Context') ? $params : new Context($params);
   }
 
   private $halted;
