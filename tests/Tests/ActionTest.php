@@ -61,7 +61,7 @@ class ActionTest extends \PHPUnit_Framework_TestCase {
 
     public function testExecuteCreatesAContext() {
         $result = MockAction::execute();
-        $this->assertNotEmpty($result->getContext());
+        $this->assertNotNull($result->getContext());
         $this->assertInstanceOf('LightServicePHP\Context', $result->getContext());
     }
 

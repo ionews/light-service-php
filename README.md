@@ -5,6 +5,7 @@ LightService PHP
 [![License](https://poser.pugx.org/ionews/light-service-php/license.svg)](https://packagist.org/packages/ionews/light-service-php)
 [![Build Status](https://travis-ci.org/Mcbarros/light-service-php.svg?branch=master)](https://travis-ci.org/Mcbarros/light-service-php)
 [![Coverage Status](https://coveralls.io/repos/Mcbarros/light-service-php/badge.png?branch=master)](https://coveralls.io/r/Mcbarros/light-service-php?branch=master)
+[![Dependency Status](https://www.versioneye.com/user/projects/5384d05214c15884b3000062/badge.svg)](https://www.versioneye.com/user/projects/5384d05214c15884b3000062)
 
 Small piece of software intended to enforce SRP on PHP apps, thought to be "light" and not use any dependencies. Heavily based on the ideas proposed by two ruby gems:
 - [LightService](https://github.com/adomokos/light-service)
