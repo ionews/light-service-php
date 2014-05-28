@@ -15,7 +15,11 @@ abstract class Action {
         $instance->before();
 
         if ($instance->success()) {
-            $instance->perform();
+            try {
+                $instance->perform();
+            } catch(\Exception $ex) {
+                $instance->caught($ex);
+            }
 
             if ($instance->success()) {
                 if (!$instance->promisesMet()) {
@@ -42,6 +46,9 @@ abstract class Action {
     protected function before() {}
     protected function after() {}
     protected function rollback() {}
+    protected function caught(\Exception $ex) {
+        throw $ex;
+    }
 
     protected function fail($msg = null) {
         return $this->context->fail($msg);

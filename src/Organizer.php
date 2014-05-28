@@ -16,12 +16,7 @@ abstract class Organizer extends Action {
 
     protected function perform() {
         foreach ($this->organize as $action) {
-            try {
-                $instance = $action::execute($this->context);
-            } catch(\Exception $ex) {
-                $this->rollback();
-                throw $ex;
-            }
+            $instance = $action::execute($this->context);
 
             if ($this->failure()) {
                 $this->rollback();
@@ -42,5 +37,10 @@ abstract class Organizer extends Action {
         while($index) {
             $this->performed[--$index]->rollback();
         }
+    }
+
+    protected function caught(\Exception $ex) {
+        $this->rollback();
+        throw $ex;
     }
 }

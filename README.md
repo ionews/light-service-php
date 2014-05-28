@@ -71,8 +71,8 @@ class UserController extends BaseController {
 
 **Keep in mind that you shouldn't use this approach everywhere in your app, but only in the really complex parts of it.**
 
-Fail and Halt
--------------
+Fail, Halt and Exceptions
+-------------------------
 An action may fail, meaning that it couldn't achieve its goal. To make an action fail just call the `fail` method (optionally passing a message).
 
 ```php
@@ -106,6 +106,8 @@ class UpdateUserPassword extends Action {
 }
 ```
 
+**You shouldn't re-implement the `rollback` method of an organizer, unless you really know what you're doing.**
+
 It's possible to stop the execution chain without fail: using `halt`. Basically it will prevent any subsequent actions of execute, but the result remains a success. You can test if an action/organizer was halted using the `halted` method.
 
 ```php
@@ -120,6 +122,8 @@ $result->success(); // true
 $result->failure(); // false
 $result->halted(); // true
 ```
+
+All exceptions that occur when performing an action are caught automatically and passed to the `caught` method. By default, actions re-throw then, on the other hand, organizers first call the `rollback` method before re-throwing. This is done so all performed actions are rolled back before the exception propagation. You can change this behaviour re-implementing the `caught` method.
 
 Before and After
 ----------------
