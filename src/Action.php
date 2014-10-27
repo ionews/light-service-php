@@ -8,7 +8,7 @@ abstract class Action {
         $instance = new $class($params);
 
         if (!$instance->expectationsMet()) {
-            $instance->fail('Expectations were not met');
+            $instance->fail('Expectations were not met: ' . $instance->getConcatenatedDiff());
             return $instance;
         }
 
@@ -23,7 +23,7 @@ abstract class Action {
 
             if ($instance->success()) {
                 if (!$instance->promisesMet()) {
-                    $instance->fail('Promises were not met');
+                    $instance->fail('Promises were not met ' . $instance->getConcatenatedDiff());
                     return $instance;
                 }
 
@@ -37,6 +37,7 @@ abstract class Action {
     protected $context;
     protected $expects = array();
     protected $promises = array();
+    protected $diff = array();
 
     protected function __construct($params) {
         $this->context = Context::build($params);
@@ -59,11 +60,13 @@ abstract class Action {
     }
 
     private function expectationsMet() {
-        return $this->context->hasKeys($this->expects);
+        $this->diff = $this->context->diffKeys($this->expects);
+        return empty($this->diff);
     }
 
     private function promisesMet() {
-        return $this->context->hasKeys($this->promises);
+        $this->diff = $this->context->diffKeys($this->promises);
+        return empty($this->diff);
     }
 
     public function success() {
@@ -84,5 +87,19 @@ abstract class Action {
 
     public function getFailureMessage() {
         return $this->context->getFailureMessage();
+    }
+
+    public function getDiff() {
+        return $this->diff;
+    }
+
+    public function getConcatenatedDiff() {
+        $str = '';
+
+        foreach ($this->diff as $value) {
+            $str .= "$value ";
+        }
+
+        return $str;
     }
 }

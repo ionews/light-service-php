@@ -52,4 +52,16 @@ class Context extends \ArrayObject {
 
         return (bool)$has;
     }
+
+    public function diffKeys(array $keys) {
+        $diff = array();
+
+        foreach ($keys as $key) {
+            if (!$this->offsetExists($key)) {
+                $diff[] = $key;
+            }
+        }
+
+        return $diff;
+    }
 }
