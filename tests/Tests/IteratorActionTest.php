@@ -52,7 +52,7 @@ class IteratorActionTest extends \PHPUnit_Framework_TestCase {
 
     public function testExecutePopulateFailureMessageIfOverCollectionNotInContext() {
         $result = MockIteratorAction::execute();
-        $this->assertEquals('Expectations were not met', $result->getFailureMessage());
+        $this->assertEquals('Expectations were not met: ' . $result->getConcatenatedDiff(), $result->getFailureMessage());
     }
 
     public function testExecuteCallsEachForEveryElementInArray() {
