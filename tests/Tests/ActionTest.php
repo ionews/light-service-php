@@ -134,7 +134,7 @@ class ActionTest extends \PHPUnit_Framework_TestCase {
 
     public function testExecutePopulateFailureMessageIfExpectationsNotMet() {
         $result = ExpectsMockAction::execute();
-        $this->assertEquals('Expectations were not met', $result->getFailureMessage());
+        $this->assertEquals('Expectations were not met: ' . $instance->getConcatenatedDiff(), $result->getFailureMessage());
     }
 
     public function testExecuteEmptyFailureMessageIfExpectationsMet() {
@@ -156,7 +156,7 @@ class ActionTest extends \PHPUnit_Framework_TestCase {
 
     public function testExecutePopulateFailureMessageIfPromisesNotMet() {
         $result = PromisesMockAction::execute(array('test' => 0));
-        $this->assertEquals('Promises were not met', $result->getFailureMessage());
+        $this->assertEquals('Promises were not met: ' . $instance->getConcatenatedDiff(), $result->getFailureMessage());
     }
 
     public function testExecuteEmptyFailureMessageIfPromisesMet() {

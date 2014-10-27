@@ -23,7 +23,7 @@ abstract class Action {
 
             if ($instance->success()) {
                 if (!$instance->promisesMet()) {
-                    $instance->fail('Promises were not met ' . $instance->getConcatenatedDiff());
+                    $instance->fail('Promises were not met: ' . $instance->getConcatenatedDiff());
                     return $instance;
                 }
 
