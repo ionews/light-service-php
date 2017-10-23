@@ -14,8 +14,13 @@ class Context extends \ArrayObject {
     public function __construct($params) {
         parent::__construct($params, self::ARRAY_AS_PROPS);
 
+        $this->resetState();
+    }
+
+    public function resetState() {
         $this->halted = false;
         $this->failure = false;
+        $this->failureMessage = null;
     }
 
     public function success() {
